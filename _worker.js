@@ -165,12 +165,7 @@ export default {
 				if (路径 == '/') {
 					if (env.URL302) return Response.redirect(env.URL302, 302);
 					else if (env.URL) return await proxyURL(env.URL, url);
-					else return new Response(JSON.stringify(request.cf, null, 4), {
-						status: 200,
-						headers: {
-							'content-type': 'application/json',
-						},
-					});
+
 				} else if (路径 == `/${fakeUserID}`) {
 					const fakeConfig = await getVLESSConfig(userID, request.headers.get('Host'), sub, 'CF-Workers-SUB', RproxyIP, url, env);
 					return new Response(`${fakeConfig}`, { status: 200 });
@@ -212,7 +207,7 @@ export default {
 							}
 						});
 					}
-					
+
 					return new Response(`${vlessConfig}`, {
 						status: 200,
 						headers: {
