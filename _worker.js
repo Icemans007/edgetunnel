@@ -211,22 +211,26 @@ export default {
 								"Subscription-Userinfo": `upload=${pagesSum}; download=${workersSum}; total=${total}; expire=${expire}`,
 							}
 						});
-					} else {
-						return new Response(`${vlessConfig}`, {
-							status: 200,
-							headers: {
-								"Content-Disposition": `attachment; filename=${FileName}; filename*=utf-8''${encodeURIComponent(FileName)}`,
-								"Content-Type": "text/plain;charset=utf-8",
-								"Profile-Update-Interval": "6",
-								"Subscription-Userinfo": `upload=${pagesSum}; download=${workersSum}; total=${total}; expire=${expire}`,
-							}
-						});
 					}
-				} else {
-					if (env.URL302) return Response.redirect(env.URL302, 302);
-					else if (env.URL) return await proxyURL(env.URL, url);
-					else return new Response('不用怀疑！你UUID就是错的！！！', { status: 404 });
+					
+					return new Response(`${vlessConfig}`, {
+						status: 200,
+						headers: {
+							"Content-Disposition": `attachment; filename=${FileName}; filename*=utf-8''${encodeURIComponent(FileName)}`,
+							"Content-Type": "text/plain;charset=utf-8",
+							"Profile-Update-Interval": "6",
+							"Subscription-Userinfo": `upload=${pagesSum}; download=${workersSum}; total=${total}; expire=${expire}`,
+						}
+					});
 				}
+				if (env.URL302) return Response.redirect(env.URL302, 302);
+				else if (env.URL) return await proxyURL(env.URL, url);
+
+				return new Response(await nginx(), {
+					headers: {
+						'Content-Type': 'text/html; charset=UTF-8',
+					},
+				});
 			} else {
 				proxyIP = url.searchParams.get('proxyip') || proxyIP;
 				if (new RegExp('/proxyip=', 'i').test(url.pathname)) proxyIP = url.pathname.toLowerCase().split('/proxyip=')[1];
@@ -1226,6 +1230,37 @@ async function ADD(envadd) {
 	const add = addtext.split(',');
 	
 	return add;
+}
+
+async function nginx() {
+	const text = `
+	<!DOCTYPE html>
+	<html>
+	<head>
+	<title>Welcome to nginx!</title>
+	<style>
+		body {
+			width: 35em;
+			margin: 0 auto;
+			font-family: Tahoma, Verdana, Arial, sans-serif;
+		}
+	</style>
+	</head>
+	<body>
+	<h1>Welcome to nginx!</h1>
+	<p>If you see this page, the nginx web server is successfully installed and
+	working. Further configuration is required.</p>
+	
+	<p>For online documentation and support please refer to
+	<a href="http://nginx.org/">nginx.org</a>.<br/>
+	Commercial support is available at
+	<a href="http://nginx.com/">nginx.com</a>.</p>
+	
+	<p><em>Thank you for using nginx.</em></p>
+	</body>
+	</html>
+	`
+	return text ;
 }
 
 async function proxyURL(proxyURL, url) {
