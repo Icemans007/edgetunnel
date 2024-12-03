@@ -167,7 +167,7 @@ export default {
 					});
 				}
 				if (env.URL302) return Response.redirect(env.URL302, 302);
-				else if (env.URL) return await proxyURL(env.URL, url);
+				else if (env.URL) return await 代理URL(env.URL, url);
 
 				return new Response(await nginxHtml(), {
 					headers: {
