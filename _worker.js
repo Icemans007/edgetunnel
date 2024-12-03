@@ -730,7 +730,7 @@ async function remoteSocketToWS(remoteSocket, webSocket, vlessResponseHeader, re
 function base64ToArrayBuffer(base64Str) {
 	// 如果输入为空，直接返回空结果
 	if (!base64Str) {
-		return { error: null };
+		return { earlyData: null, error: null };
 	}
 	try {
 		// Go 语言使用了 URL 安全的 Base64 变体（RFC 4648）
@@ -751,7 +751,7 @@ function base64ToArrayBuffer(base64Str) {
 		return { earlyData: arryBuffer.buffer, error: null };
 	} catch (error) {
 		// 如果在任何步骤中出现错误（如非法 Base64 字符），则返回错误
-		return { error };
+		return { earlyData: null, error };
 	}
 }
 
@@ -1781,8 +1781,8 @@ function 生成动态UUID(密钥) {
 
 	function 获取当前周数() {
 		const 现在 = new Date();
-		const 调整后的现在 = new Date(现在.getTime() + 时区偏移 * 60 * 60 * 1000);
-		const 时间差 = 调整后的现在 - 起始日期;
+		const 调整后的现在 = new Date(现在.getTime() + 时区偏移 * 60 * 60 * 1000).getTime();
+		const 时间差 = 调整后的现在 - 起始日期.getTime();
 		return Math.ceil(时间差 / 一周的毫秒数);
 	}
 
